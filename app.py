@@ -4,7 +4,7 @@ from google.oauth2.service_account import Credentials
 from datetime import datetime
 
 # --- CONFIGURATION ---
-SHEET_NAME = "Tuesday Breakdown Log" # <--- THIS MUST BE THE GOOGLE SHEET NAME
+SHEET_NAME = "Tuesday Breakdown" # <--- THIS MUST BE THE GOOGLE SHEET NAME
 
 # --- GOOGLE CONNECTION ---
 def get_sheet():
