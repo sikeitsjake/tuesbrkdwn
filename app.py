@@ -8,11 +8,11 @@ SHEET_NAME = "Tuesday Breakdown Log" # <--- THIS MUST BE THE GOOGLE SHEET NAME
 
 # --- GOOGLE CONNECTION ---
 def get_sheet():
-    scopes = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
-    
-    # Use the 'service_account' method directly from gspread
-    # This is more stable than the older oauth2client method
-    gc = gspread.service_account(filename='creds.json')
+    # 1. Access the secrets dictionary
+    creds_info = st.secrets["gcp_service_account"]
+    # 2. Authenticate using the dictionary
+    gc = gspread.service_account_from_dict(creds_info)
+    # 3. Open the sheet
     return gc.open(SHEET_NAME).sheet1
 
 # --- USER INTERFACE ---
