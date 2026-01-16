@@ -16,15 +16,15 @@ def get_sheet():
     return gc.open(SHEET_NAME).sheet1
 
 # --- USER INTERFACE ---
-st.set_page_config(page_title="Crab Log", page_icon="🦀")
+st.set_page_config(page_title="Tuesday Crab Log", page_icon="🦀")
 
-st.title("🦀 Crab Breakdown Log")
+st.title("🦀 Tuesday Crab Breakdown Form")
 st.write("Enter the box counts below.")
 
 # Create the form
 with st.form("crab_entry", clear_on_submit=True):
     # 1. Who is logging?
-    worker = st.selectbox("Worker Name", ["-- Select Name --", "Alex", "Brandon", "Jake", "Josh"])
+    worker = st.selectbox("Team Member Name", ["-- Select Name --", "Alex", "Brandon", "Jake", "Josh"])
     
     # 2. What kind of crabs?
     category = st.radio(
