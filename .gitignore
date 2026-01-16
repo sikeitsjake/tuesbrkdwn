@@ -21,3 +21,4 @@ Thumbs.db
 
 # Environment variables (Sensitive info)
 .env
+creds.json
