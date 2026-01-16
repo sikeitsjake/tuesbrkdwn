@@ -4,16 +4,15 @@ from google.oauth2.service_account import Credentials
 from datetime import datetime
 
 # --- CONFIGURATION ---
-SHEET_NAME = "Crab Log Sheet"  # <--- CHANGE THIS to your exact sheet name
+SHEET_NAME = "Tuesday Breakdown Log" # <--- THIS MUST BE THE GOOGLE SHEET NAME
 
-# --- UPDATED GOOGLE CONNECTION ---
+# --- GOOGLE CONNECTION ---
 def get_sheet():
     scopes = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
     
     # Use the 'service_account' method directly from gspread
     # This is more stable than the older oauth2client method
     gc = gspread.service_account(filename='creds.json')
-    
     return gc.open(SHEET_NAME).sheet1
 
 # --- USER INTERFACE ---
@@ -30,7 +29,7 @@ with st.form("crab_entry", clear_on_submit=True):
     # 2. What kind of crabs?
     category = st.radio(
         "Crab Category",
-        ["#1 Large Males", "#2 Medium Males", "Females", "Culls/Mixed"],
+        ["#1 Males", "#2 Males", "Females"],
         index=None # Starts with nothing selected
     )
     
