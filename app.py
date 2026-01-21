@@ -17,7 +17,7 @@ if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
 # Function that checks if the PIN is correct, and sets the user as authenticated
-def check_password():
+def check_password() -> None:
     """Returns True if the correct password is used"""
     if st.session_state["pin_input"] == st.secrets["APP_PIN"]: # <-- Sets the pin for the app
         st.session_state.authenticated = True
