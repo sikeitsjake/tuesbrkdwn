@@ -47,19 +47,20 @@ def get_sheet():
     return gc.open(SHEET_NAME).sheet1
 
 # --- USER INTERFACE ---
-st.set_page_config(page_title="Tuesday Crab Log", page_icon="🦀")
+st.set_page_config(
+    page_title="Tuesday Crab Log", 
+    page_icon="🦀",
+    layout="wide"
+)
 
 st.title("🦀 Tuesday Crab Breakdown Form")
 st.write("Fill in the following form to the best of your abilities:")
 
+# 1. Who is logging?
+worker = st.selectbox("Team Member Name", ["-- Select Name --", "Alex", "Brandon", "Jake", "Josh", "Steve"])
+
 # Create the form
 with st.form("crab_entry", clear_on_submit=False):
-
-    # 1. Who is logging?
-    worker = st.selectbox("Team Member Name", ["-- Select Name --", "Alex", "Brandon", "Jake", "Josh"])
-
-    # Visual Markdown
-    st.markdown("---")
 
     col1, col2, col3= st.columns(3)
 
@@ -80,6 +81,7 @@ with st.form("crab_entry", clear_on_submit=False):
         num_MD_MD = st.number_input("Dozens of Maryland Mediums", min_value=0.0, step=0.5)
         num_MD_LG = st.number_input("Dozens of Maryland Larges", min_value=0.0, step=0.5)
         num_MD_XL = st.number_input("Dozens of Maryland XLs", min_value=0.0, step=0.5)
+        num_MD_jumbo = st.number_input("Dozens of Maryland Jumbos", min_value=0.0, step=0.5)
         num_MD_bush = st.number_input("Bushels of Maryland 1's", min_value=0.0, step=0.5)
 
     with col2:
@@ -99,6 +101,7 @@ with st.form("crab_entry", clear_on_submit=False):
         num_LA_MD = st.number_input("Dozens of Louisiana Mediums", min_value=0.0, step=0.5)
         num_LA_LG = st.number_input("Dozens of Louisiana Larges", min_value=0.0, step=0.5)
         num_LA_XL = st.number_input("Dozens of Louisiana XLs", min_value=0.0, step=0.5)
+        num_LA_jumbo = st.number_input("Dozens of Louisiana Jumbo", min_value=0.0, step=0.5)
         num_LA_bush = st.number_input("Bushels of Louisiana 1's", min_value=0.0, step=0.5)
     
     with col3:
@@ -106,6 +109,25 @@ with st.form("crab_entry", clear_on_submit=False):
 
         # How many boxes of Females?
         num_fem_boxes = st.number_input(f"{NUMBER_OF_MSG} Females", min_value=0, step=1)
+
+        # Smart Spacer
+        st.markdown(
+            """
+            <style>
+                .desktop-spacer {
+                    height: 84px; /* Adjust this by 1-2px if it's still slightly off */
+                    display: block;
+                }
+                @media (max-width: 768px) {
+                    .desktop-spacer {
+                        display: none;
+                    }
+                }
+            </style>
+            <div class="desktop-spacer"></div>
+            """, 
+            unsafe_allow_html=True
+        )
 
         # Visual Divider
         st.divider()
@@ -115,6 +137,7 @@ with st.form("crab_entry", clear_on_submit=False):
         num_regf = st.number_input("Dozens of Regular Females", min_value=0.0, step=0.5)
         num_lgf = st.number_input("Dozens of Large Females", min_value=0.0, step=0.5)
         num_xlf = st.number_input("Dozens of XL Females", min_value=0.0, step=0.5)
+        num_jumbofem = st.number_input("Dozens of Jumbo Females", min_value=0.0, step=0.5)
 
     # SAFTEY CHECKBOX
     st.markdown("---") # Visual Seperator
@@ -131,6 +154,16 @@ with st.form("crab_entry", clear_on_submit=False):
     # When the submit button is pressed do these checks
     if submit_button:
 
+        # Check all values that have been input
+        total_entry = sum([
+            # All MD Data
+            num_MD_1s, num_MD_2s, num_MD_SM, num_MD_MD, num_MD_LG, num_MD_XL, num_MD_jumbo, num_MD_bush,
+            # All LA Data
+            num_LA_1s, num_LA_2s, num_LA_SM, num_LA_MD, num_LA_LG, num_LA_XL, num_LA_jumbo, num_LA_bush,
+            # All Female Data
+            num_fem_boxes, num_regf, num_lgf, num_xlf, num_jumbofem
+        ])
+
         # Form can only be submitted on Tuesdays
         if day_of_week != "Tues":
             st.error("⚠️ This form is only to be submitted on Tuesdays!")
@@ -138,6 +171,10 @@ with st.form("crab_entry", clear_on_submit=False):
         # Check to make sure the user submits their data correctly
         elif not confirm_data:
             st.error("⚠️ Submission Blocked! Please complete the form and click the Confirmation Box.")
+        
+        # Makes sure the form is not zeroed out!
+        elif total_entry == 0:
+            st.error("⚠️ Submission Blocked! All Data points cannot be 0!")
         
         # Team Member must be submitted and a Crab Category must be selected
         elif worker == "-- Select Name --":
@@ -150,11 +187,16 @@ with st.form("crab_entry", clear_on_submit=False):
 
                 # This is the data that will be appended. MUST BE AN ARRAY OF SINGLE VALUES
                 row = [
+                    # Date
                     timestamp, 
+                    # Team Member
                     worker, 
-                    num_MD_1s, num_MD_2s, num_MD_SM, num_MD_MD, num_MD_LG, num_MD_XL, num_MD_bush,
-                    num_LA_1s, num_LA_2s, num_LA_SM, num_LA_MD, num_LA_LG, num_LA_XL, num_LA_bush,
-                    num_fem_boxes, num_regf, num_lgf, num_xlf
+                    # All MD Data
+                    num_MD_1s, num_MD_2s, num_MD_SM, num_MD_MD, num_MD_LG, num_MD_XL, num_MD_jumbo, num_MD_bush,
+                    # All LA Data
+                    num_LA_1s, num_LA_2s, num_LA_SM, num_LA_MD, num_LA_LG, num_LA_XL, num_LA_jumbo, num_LA_bush,
+                    # All Female Data
+                    num_fem_boxes, num_regf, num_lgf, num_xlf, num_jumbofem
                     ]
                 
                 # Append to Google Sheets
@@ -163,10 +205,6 @@ with st.form("crab_entry", clear_on_submit=False):
                 # Show success animation
                 st.balloons()
                 st.success(f"✅ Success! Thank you {worker} for submitting your data!")
-
-                # Clear the app.
-                time.sleep(2)
-                st.rerun()
             
             # If any error occurs, show that on the app.
             except Exception as e:
